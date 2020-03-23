@@ -76,7 +76,7 @@ private[fact] case class SymbolFact(expression: String) extends Fact {
 //----------------------------------------------------------------------------------------------------------------------
 
 private[fact] case class PathFact(fact: Fact, path: Fact) extends Fact {
-  override def suit(context: ContextLike): Boolean = (context in path) { fact suit } exists identity
+  override def suit(context: ContextLike): Boolean = (context.relations filter (path suit)) map (fact suit) exists identity
 
   override def isComplex: Boolean = true
 }

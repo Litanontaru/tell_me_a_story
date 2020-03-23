@@ -1,2 +1,9 @@
-*.class
-*.log
+### IDEA project files ###
+.idea/
+*.ipr
+*.iws
+*.iml
+
+### Java ###
+target/
+/.project

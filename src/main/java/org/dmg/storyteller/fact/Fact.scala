@@ -3,7 +3,7 @@ package org.dmg.storyteller.fact
 import scala.language.{implicitConversions, postfixOps}
 
 trait Fact {
-  def suit(context: Context): Boolean
+  def suit(context: ContextLike): Boolean
 
   def isComplex: Boolean = false
 
@@ -39,7 +39,7 @@ trait Fact {
 //----------------------------------------------------------------------------------------------------------------------
 
 object NoFact extends Fact {
-  override def suit(context: Context): Boolean = true
+  override def suit(context: ContextLike): Boolean = true
 
   override def conform(expression: String): Boolean = false
 
@@ -49,7 +49,7 @@ object NoFact extends Fact {
 }
 
 object AllFacts extends Fact {
-  override def suit(context: Context): Boolean = false
+  override def suit(context: ContextLike): Boolean = false
 
   override def conform(expression: String): Boolean = true
 
@@ -59,7 +59,7 @@ object AllFacts extends Fact {
 }
 
 private[fact] case class SymbolFact(expression: String) extends Fact {
-  override def suit(context: Context): Boolean = context.superposition.exists(_ conform expression)
+  override def suit(context: ContextLike): Boolean = context.superposition.exists(_ conform expression)
 
   override def conform(expression: String): Boolean = this.expression == expression
 
@@ -71,7 +71,7 @@ private[fact] case class SymbolFact(expression: String) extends Fact {
 //----------------------------------------------------------------------------------------------------------------------
 
 private[fact] case class PathFact(fact: Fact, path: Fact) extends Fact {
-  override def suit(context: Context): Boolean = (context in path) { fact suit } exists identity
+  override def suit(context: ContextLike): Boolean = (context in path) { fact suit } exists identity
 
   override def isComplex: Boolean = true
 }
@@ -79,7 +79,7 @@ private[fact] case class PathFact(fact: Fact, path: Fact) extends Fact {
 //----------------------------------------------------------------------------------------------------------------------
 
 private[fact] case class StrictNegativeFact(fact: Fact) extends Fact {
-  override def suit(context: Context): Boolean = !(fact suit context)
+  override def suit(context: ContextLike): Boolean = !(fact suit context)
 
   override def isComplex: Boolean = true
 
@@ -87,7 +87,7 @@ private[fact] case class StrictNegativeFact(fact: Fact) extends Fact {
 }
 
 private[fact] case class StrictAndFact(facts: Seq[Fact]) extends Fact {
-  override def suit(context: Context): Boolean = context.superposition.exists(c ⇒ facts.forall(_ suit c))
+  override def suit(context: ContextLike): Boolean = context.superposition.exists(c ⇒ facts.forall(_ suit c))
 
   override def isComplex: Boolean = true
 
@@ -95,7 +95,7 @@ private[fact] case class StrictAndFact(facts: Seq[Fact]) extends Fact {
 }
 
 private[fact] case class StrictOrFact(facts: Seq[Fact]) extends Fact {
-  override def suit(context: Context): Boolean = context.superposition.exists(c ⇒ facts.exists(_ suit c))
+  override def suit(context: ContextLike): Boolean = context.superposition.exists(c ⇒ facts.exists(_ suit c))
 
   override def isComplex: Boolean = true
 
@@ -105,7 +105,7 @@ private[fact] case class StrictOrFact(facts: Seq[Fact]) extends Fact {
 //----------------------------------------------------------------------------------------------------------------------
 
 private[fact] case class WeakNegativeFact(fact: Fact) extends Fact {
-  override def suit(context: Context): Boolean = context.superposition.exists(c ⇒ !(fact suit c))
+  override def suit(context: ContextLike): Boolean = context.superposition.exists(c ⇒ !(fact suit c))
 
   override def conform(expression: String): Boolean = !fact.conform(expression)
 
@@ -117,7 +117,7 @@ private[fact] case class WeakNegativeFact(fact: Fact) extends Fact {
 }
 
 private[fact] case class WeakAndFact(facts: Seq[Fact]) extends Fact {
-  override def suit(context: Context): Boolean = facts.forall(_ suit context)
+  override def suit(context: ContextLike): Boolean = facts.forall(_ suit context)
 
   override def conform(expression: String): Boolean = facts.exists(_ conform expression)
 
@@ -131,7 +131,7 @@ private[fact] case class WeakAndFact(facts: Seq[Fact]) extends Fact {
 }
 
 private[fact] case class WeakOrFact(facts: Seq[Fact]) extends Fact {
-  override def suit(context: Context): Boolean = facts.exists(_ suit context)
+  override def suit(context: ContextLike): Boolean = facts.exists(_ suit context)
 
   override def conform(expression: String): Boolean = facts.exists(_ conform expression)
 

@@ -5,5 +5,5 @@ trait Context extends ContextLike {
 
   def :-(fact: Fact): Context
 
-  def link(next: Context): Context
+  def ++(next: Context): Context
 }

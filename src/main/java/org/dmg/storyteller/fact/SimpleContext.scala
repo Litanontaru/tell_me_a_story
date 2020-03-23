@@ -5,7 +5,7 @@ import scala.language.postfixOps
 
 class SimpleContext extends Context {
   private val facts = ListBuffer.empty[Fact]
-  private val relationList = ListBuffer.empty[ContextLike]
+  private val links = ListBuffer.empty[ContextLike]
 
   override def :+(fact: Fact): Context = {
     if (fact.isComplex) {
@@ -23,12 +23,12 @@ class SimpleContext extends Context {
     this
   }
 
-  override def link(next: Context): Context = {
-    relationList.append(new ViewContext(next, new SimpleContext()))
+  override def ++(next: Context): Context = {
+    links.append(new ViewContext(next, new SimpleContext()))
     this
   }
 
-  override def relations: Iterable[ContextLike] = relationList
+  override def relations: Iterable[ContextLike] = links
 
   override def conform(expression: String): Boolean = facts.exists(_ conform expression)
 
@@ -38,7 +38,7 @@ class SimpleContext extends Context {
     .map(facts ⇒ {
       val context = new SimpleContext
       context.facts.append(facts: _*)
-      context.relationList.append(relationList: _*)
+      context.links.append(links: _*)
       context
     })
 }

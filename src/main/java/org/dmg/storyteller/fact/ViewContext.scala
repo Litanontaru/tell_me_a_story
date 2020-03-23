@@ -5,5 +5,5 @@ class ViewContext(base: ContextLike, view: Context) extends ViewContextLike(base
 
   override def :-(fact: Fact): Context = view :- fact
 
-  override def link(next: Context): Context = view.link(next)
+  override def ++(next: Context): Context = view.++(next)
 }

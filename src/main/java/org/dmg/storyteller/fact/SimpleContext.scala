@@ -23,8 +23,8 @@ class SimpleContext extends Context {
     this
   }
 
-  override def ++(next: Context): Context = {
-    links.append(new ViewContext(next, new SimpleContext()))
+  override def ++(link: Context): Context = {
+    links.append(link)
     this
   }
 

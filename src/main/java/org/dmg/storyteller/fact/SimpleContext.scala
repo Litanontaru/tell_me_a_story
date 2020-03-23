@@ -5,7 +5,7 @@ import scala.language.postfixOps
 
 class SimpleContext extends Context {
   private val facts = ListBuffer.empty[Fact]
-  private val relations = ListBuffer.empty[Context]
+  private val relations = ListBuffer.empty[RelationContext]
 
   override def :+(fact: Fact): Context = {
     if (fact.isComplex) {
@@ -23,11 +23,15 @@ class SimpleContext extends Context {
     this
   }
 
-  override def link(next: Context): Context = ???
+  override def link(next: Context): Context = {
+    relations.append(new RelationContext(new SimpleContext(), next))
+    this
+  }
 
   override def conform(expression: String): Boolean = facts.exists(_ conform expression)
 
-  override def in[A](path: Fact)(f: ContextLike ⇒ A): Traversable[A] = ???
+  override def in[A](path: Fact)(f: ContextLike ⇒ A): Traversable[A] =
+    relations.filter(r ⇒ path.suit(r.link)).map(f)
 
   override def superposition: Seq[ContextLike] = WeakAndFact(facts)
     .toLiterals

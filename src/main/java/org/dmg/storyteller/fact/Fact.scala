@@ -5,6 +5,11 @@ import scala.language.{implicitConversions, postfixOps}
 trait Fact {
   def suit(context: ContextLike): Boolean
 
+  /**
+    * Show if this Fact can be transformed to Literals and can open parentheses for negation
+    *
+    * @return true - if it cannot be transformed to literals
+    */
   def isComplex: Boolean = false
 
   def conform(expression: String): Boolean = throw new UnsupportedOperationException
@@ -13,7 +18,7 @@ trait Fact {
 
   def openParenthesesForNegation: Fact = throw new UnsupportedOperationException
 
-  //--------------------------------------------------------------------------------------------------------------------
+  //--- USE ONLY TO BUILD PREDICATE EXPRESSION -------------------------------------------------------------------------
 
   def unary_!! : Fact = StrictNegativeFact(this)
 

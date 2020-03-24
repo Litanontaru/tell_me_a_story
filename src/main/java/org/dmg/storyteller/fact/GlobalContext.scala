@@ -15,6 +15,7 @@ class GlobalContext {
     case Some(context) ⇒ context
     case None ⇒
       val context = new SimpleContext()
+      context add path
       links.append(context)
       context
   }

@@ -1,9 +1,9 @@
 package org.dmg.storyteller.fact
 
 class ViewContext(base: ContextLike, view: Context) extends ViewContextLike(base, view) with Context {
-  override def :+(fact: Fact): Context = view :+ fact
+  override def add(fact: Fact): Context = view add fact
 
-  override def :-(fact: Fact): Context = view :- fact
+  override def remove(fact: Fact): Context = view remove fact
 
-  override def ++(next: Context): Context = view.++(next)
+  override def link(next: Context): Context = view.link(next)
 }

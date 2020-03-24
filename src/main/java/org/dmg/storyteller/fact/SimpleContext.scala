@@ -7,7 +7,7 @@ class SimpleContext extends Context {
   private val facts = ListBuffer.empty[Fact]
   private val links = ListBuffer.empty[ContextLike]
 
-  override def :+(fact: Fact): Context = {
+  override def add(fact: Fact): Context = {
     if (fact.isComplex) {
       throw new UnsupportedOperationException("Cannot add complex fact " + fact)
     }
@@ -15,7 +15,7 @@ class SimpleContext extends Context {
     this
   }
 
-  override def :-(fact: Fact): Context = {
+  override def remove(fact: Fact): Context = {
     val i = facts.indexOf(fact)
     if (i >= 0) {
       facts.remove(i)
@@ -23,7 +23,7 @@ class SimpleContext extends Context {
     this
   }
 
-  override def ++(link: Context): Context = {
+  override def link(link: Context): Context = {
     links.append(link)
     this
   }

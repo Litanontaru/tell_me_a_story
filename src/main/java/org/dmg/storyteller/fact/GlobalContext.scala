@@ -20,4 +20,6 @@ class GlobalContext {
   }
 
   implicit def toContext(path: String): Context = toContext(Fact.stringToFact(path))
+
+  implicit def toContext(path: Symbol): Context = toContext(Fact.symbolToFact(path))
 }

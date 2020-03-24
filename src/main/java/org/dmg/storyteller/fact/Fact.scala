@@ -34,7 +34,7 @@ trait Fact {
 
   def |(fact: Fact): Fact = WeakOrFact(Seq(this, fact))
 
-  def unary_~ : Fact = !this & this
+  def unary_~ : Fact = MayByFact(this)
 
   //--------------------------------------------------------------------------------------------------------------------
 
@@ -79,10 +79,24 @@ private[fact] case class SymbolFact(expression: String) extends Fact {
   override def toString: String = s"F($expression)"
 }
 
+private[fact] case class MayByFact(fact: Fact) extends Fact {
+  private val inner = WeakAndFact(Seq(fact, !fact))
+
+  override def suit(context: ContextLike): Boolean = inner suit context
+
+  override def conform(expression: String): Boolean = inner conform expression
+
+  override def toLiterals: Seq[Seq[String]] = inner.toLiterals
+
+  override def openParenthesesForNegation: Fact = inner.openParenthesesForNegation
+
+  override def toString: String = s"~$fact"
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 private[fact] case class PathFact(fact: Fact, path: Fact) extends Fact {
-  override def suit(context: ContextLike): Boolean = (context.relations filter (path suit)) map (fact suit) exists identity
+  override def suit(context: ContextLike): Boolean = context.relations filter (path suit) exists (fact suit)
 
   override def isComplex: Boolean = true
 

@@ -11,7 +11,7 @@ object Test {
 
     ('A | 'D) link ('B / 'C)
 
-    if ("B" :: "C" suit 'D) {
+    if ('D :: 'B :: 'C) {
       println("Good")
     }
   }

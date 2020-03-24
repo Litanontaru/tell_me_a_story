@@ -51,6 +51,8 @@ object NoFact extends Fact {
   override def toLiterals: Seq[Seq[String]] = Seq(Seq())
 
   override def openParenthesesForNegation: Fact = AllFacts
+
+  override def toString: String = "NO"
 }
 
 object AllFacts extends Fact {
@@ -61,6 +63,8 @@ object AllFacts extends Fact {
   override def toLiterals: Seq[Seq[String]] = Seq(Seq(""))
 
   override def openParenthesesForNegation: Fact = NoFact
+
+  override def toString: String = "ALL"
 }
 
 private[fact] case class SymbolFact(expression: String) extends Fact {
@@ -71,6 +75,8 @@ private[fact] case class SymbolFact(expression: String) extends Fact {
   override def toLiterals: Seq[Seq[String]] = Seq(Seq(expression))
 
   override def openParenthesesForNegation: Fact = SymbolFact("!" + expression)
+
+  override def toString: String = s"F($expression)"
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -79,6 +85,8 @@ private[fact] case class PathFact(fact: Fact, path: Fact) extends Fact {
   override def suit(context: ContextLike): Boolean = (context.relations filter (path suit)) map (fact suit) exists identity
 
   override def isComplex: Boolean = true
+
+  override def toString: String = s"$path :: $fact"
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -89,6 +97,8 @@ private[fact] case class StrictNegativeFact(fact: Fact) extends Fact {
   override def isComplex: Boolean = true
 
   override def unary_!! : Fact = fact
+
+  override def toString: String = s"!!$fact"
 }
 
 private[fact] case class StrictAndFact(facts: Seq[Fact]) extends Fact {
@@ -97,6 +107,8 @@ private[fact] case class StrictAndFact(facts: Seq[Fact]) extends Fact {
   override def isComplex: Boolean = true
 
   override def &&(fact: Fact): Fact = StrictAndFact(facts :+ fact)
+
+  override def toString: String = facts.mkString("(", " && ", ")")
 }
 
 private[fact] case class StrictOrFact(facts: Seq[Fact]) extends Fact {
@@ -105,6 +117,8 @@ private[fact] case class StrictOrFact(facts: Seq[Fact]) extends Fact {
   override def isComplex: Boolean = true
 
   override def ||(fact: Fact): Fact = StrictOrFact(facts :+ fact)
+
+  override def toString: String = facts.mkString("(", " || ", ")")
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -119,6 +133,8 @@ private[fact] case class WeakNegativeFact(fact: Fact) extends Fact {
   override def openParenthesesForNegation: Fact = fact
 
   override def unary_! : Fact = fact
+
+  override def toString: String = s"!$fact"
 }
 
 private[fact] case class WeakAndFact(facts: Seq[Fact]) extends Fact {
@@ -133,6 +149,8 @@ private[fact] case class WeakAndFact(facts: Seq[Fact]) extends Fact {
   override def openParenthesesForNegation: Fact = WeakOrFact(facts.map(!_))
 
   override def &(fact: Fact): Fact = WeakAndFact(facts :+ fact)
+
+  override def toString: String = facts.mkString("(", " & ", ")")
 }
 
 private[fact] case class WeakOrFact(facts: Seq[Fact]) extends Fact {
@@ -145,6 +163,8 @@ private[fact] case class WeakOrFact(facts: Seq[Fact]) extends Fact {
   override def openParenthesesForNegation: Fact = WeakAndFact(facts.map(!_))
 
   override def |(fact: Fact): Fact = WeakOrFact(facts :+ fact)
+
+  override def toString: String = facts.mkString("(", " | ", ")")
 }
 
 //----------------------------------------------------------------------------------------------------------------------

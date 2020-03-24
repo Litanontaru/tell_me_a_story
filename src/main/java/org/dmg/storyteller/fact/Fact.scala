@@ -150,6 +150,7 @@ private[fact] case class WeakOrFact(facts: Seq[Fact]) extends Fact {
 //----------------------------------------------------------------------------------------------------------------------
 
 object Fact {
-  implicit def stringToFact(string: String): Fact =
-    if (string.isEmpty) AllFacts else SymbolFact(string)
+  implicit def symbolToFact(symbol: Symbol): Fact = SymbolFact(symbol.name)
+
+  implicit def stringToFact(string: String): Fact = if (string.isEmpty) AllFacts else SymbolFact(string)
 }

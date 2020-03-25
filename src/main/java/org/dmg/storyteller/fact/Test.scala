@@ -21,7 +21,7 @@ object Test {
 
     test("A" :: ('a && 'b))
 
-    ('A | 'D) link ('B / 'C)    //todo create superposition of Context to return several contexts when they called
+    ('A | 'D) link ('B / 'C)
     ('A | 'D) link ('B / 'E)
     'E add 'C
 

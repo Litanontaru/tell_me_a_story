@@ -19,13 +19,16 @@ class GlobalContext {
     override def relations: Iterable[ContextLike] = links
   }
 
-  implicit def toContext(path: Fact): Context = links find (path suit) match {
-    case Some(context) ⇒ context
-    case None ⇒
+  implicit def toContext(path: Fact): Context = {
+    val contexts = links filter (path suit)
+    if (contexts.isEmpty) {
       val context = new SimpleContext()
       context add path
       links.append(context)
       context
+    } else {
+      new CompositeContext(contexts)
+    }
   }
 
   implicit def toContext(path: String): Context = toContext(Fact.stringToFact(path))

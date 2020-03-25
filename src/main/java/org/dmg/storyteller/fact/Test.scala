@@ -10,9 +10,23 @@ object Test {
     import globalContext._
 
     ('A | 'D) link ('B / 'C)
+    ('A | 'D) link ('B / 'E)
+    'E add 'C
 
     if ('D :: 'B :: 'C) {
-      println("Good")
+      println("A")
+    }
+
+    if ('A :: 'B ::: 'C) {
+      println("B")
+    }
+
+    if ('A :: 'B ::: 'E) {
+      println("C")
+    }
+
+    if (!('A :: 'B ::: 'E)) {
+      println("D")
     }
   }
 }

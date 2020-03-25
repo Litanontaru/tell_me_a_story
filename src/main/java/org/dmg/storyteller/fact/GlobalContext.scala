@@ -12,7 +12,7 @@ class GlobalContext {
   private val links = ListBuffer.empty[Context]
 
   private val suitContext: ContextLike = new ContextLike {
-    override def conform(expression: String): Boolean = false
+    override def has(expression: String): Boolean = false
 
     override def superposition: Seq[ContextLike] = Seq(this)
 

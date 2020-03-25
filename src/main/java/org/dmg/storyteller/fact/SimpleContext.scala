@@ -30,7 +30,7 @@ class SimpleContext extends Context {
 
   override def relations: Iterable[ContextLike] = links
 
-  override def conform(expression: String): Boolean = facts.exists(_ conform expression)
+  override def has(expression: String): Boolean = facts.exists(_ conform expression)
 
   override def superposition: Seq[ContextLike] = WeakAndFact(facts)
     .toLiterals

@@ -70,7 +70,7 @@ object AllFacts extends Fact {
 }
 
 private[fact] case class SymbolFact(expression: String) extends Fact {
-  override def suit(context: ContextLike): Boolean = context.superposition.exists(_ conform expression)
+  override def suit(context: ContextLike): Boolean = context.superposition.exists(_ has expression)
 
   override def conform(expression: String): Boolean = this.expression == expression
 
@@ -183,6 +183,7 @@ private[fact] case class WeakOrFact(facts: Seq[Fact]) extends Fact {
 
   override def conform(expression: String): Boolean = facts.exists(_ conform expression)
 
+  //todo this looks like xor, not or
   override def toLiterals: Seq[Seq[String]] = facts.flatMap(_.toLiterals)
 
   override def openParenthesesForNegation: Fact = WeakAndFact(facts.map(!_))

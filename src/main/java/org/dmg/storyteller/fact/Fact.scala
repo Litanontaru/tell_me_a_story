@@ -39,6 +39,8 @@ trait Fact {
   //--------------------------------------------------------------------------------------------------------------------
 
   def ::(path: Fact): Fact = PathFact(this, path)
+
+  def :::(path: Fact): Fact = AllPathFact(this, path)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -103,6 +105,17 @@ private[fact] case class PathFact(fact: Fact, path: Fact) extends Fact {
   override def toString: String = s"$path :: $fact"
 }
 
+private[fact] case class AllPathFact(fact: Fact, path: Fact) extends Fact {
+  override def suit(context: ContextLike): Boolean = {
+    val contexts = context.relations filter (path suit)
+    contexts.nonEmpty && (contexts forall (fact suit))
+  }
+
+  override def isComplex: Boolean = true
+
+  override def toString: String = s"$path ::: $fact"
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 private[fact] case class StrictNegativeFact(fact: Fact) extends Fact {
@@ -156,9 +169,7 @@ private[fact] case class WeakAndFact(facts: Seq[Fact]) extends Fact {
 
   override def conform(expression: String): Boolean = facts.exists(_ conform expression)
 
-  override def toLiterals: Seq[Seq[String]] = facts
-    .map(_.toLiterals)
-    .foldLeft(Seq(Seq[String]()))(for {a <- _; b <- _} yield a ++ b)
+  override def toLiterals: Seq[Seq[String]] = (Seq(Seq[String]()) /: facts.map(_.toLiterals))(for (a <- _; b <- _) yield a ++ b)
 
   override def openParenthesesForNegation: Fact = WeakOrFact(facts.map(!_))
 

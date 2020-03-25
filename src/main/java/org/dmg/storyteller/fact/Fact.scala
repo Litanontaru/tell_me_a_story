@@ -183,8 +183,9 @@ private[fact] case class WeakOrFact(facts: Seq[Fact]) extends Fact {
 
   override def conform(expression: String): Boolean = facts.exists(_ conform expression)
 
-  //todo this looks like xor, not or
-  override def toLiterals: Seq[Seq[String]] = facts.flatMap(_.toLiterals)
+  override def toLiterals: Seq[Seq[String]] =
+    (Seq(Seq[String]()) /: facts.map(_.toLiterals)) { (r, l) ⇒ r ++ (for (a <- r; b <- l) yield a ++ b) }
+      .filter(_.nonEmpty)
 
   override def openParenthesesForNegation: Fact = WeakAndFact(facts.map(!_))
 

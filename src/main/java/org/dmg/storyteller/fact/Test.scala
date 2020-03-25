@@ -9,24 +9,25 @@ object Test {
 
     import globalContext._
 
-    ('A | 'D) link ('B / 'C)
+    def test(fact: Fact): Unit = {
+      if (fact) {
+        println(fact)
+      } else {
+        println(s"no $fact")
+      }
+    }
+
+    'A add 'a | 'b
+
+    test("A" :: ('a && 'b))
+
+    ('A | 'D) link ('B / 'C)    //todo create superposition of Context to return several contexts when they called
     ('A | 'D) link ('B / 'E)
     'E add 'C
 
-    if ('D :: 'B :: 'C) {
-      println("A")
-    }
-
-    if ('A :: 'B ::: 'C) {
-      println("B")
-    }
-
-    if ('A :: 'B ::: 'E) {
-      println("C")
-    }
-
-    if (!('A :: 'B ::: 'E)) {
-      println("D")
-    }
+    test('D :: 'B :: 'C)
+    test('A :: 'B ::: 'C)
+    test('A :: 'B ::: 'E)
+    test(!('A :: 'B ::: 'E))
   }
 }

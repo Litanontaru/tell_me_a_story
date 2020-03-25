@@ -11,6 +11,14 @@ import scala.language.{implicitConversions, postfixOps}
 class GlobalContext {
   private val links = ListBuffer.empty[Context]
 
+  private val suitContext: ContextLike = new ContextLike {
+    override def conform(expression: String): Boolean = false
+
+    override def superposition: Seq[ContextLike] = Seq(this)
+
+    override def relations: Iterable[ContextLike] = links
+  }
+
   implicit def toContext(path: Fact): Context = links find (path suit) match {
     case Some(context) ⇒ context
     case None ⇒
@@ -24,8 +32,5 @@ class GlobalContext {
 
   implicit def toContext(path: Symbol): Context = toContext(Fact.symbolToFact(path))
 
-  implicit def suit(fact: Fact): Boolean = fact match {
-    case path: PathFact ⇒ path.fact suit path.path
-    case _ ⇒ false
-  }
+  implicit def suit(fact: Fact): Boolean = fact suit suitContext
 }

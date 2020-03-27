@@ -20,7 +20,7 @@ trait Fact {
 
   //--- USE ONLY TO BUILD PREDICATE EXPRESSION -------------------------------------------------------------------------
 
-  def unary_!! : Fact = StrictNegativeFact(this)
+  def unary_- : Fact = StrictNegativeFact(this)
 
   def &&(fact: Fact): Fact = StrictAndFact(Seq(this, fact))
 
@@ -41,6 +41,10 @@ trait Fact {
   def ::(path: Fact): Fact = PathFact(this, path)
 
   def :::(path: Fact): Fact = AllPathFact(this, path)
+
+  def up : Fact = NoFact
+
+  def base(implicit globalContext: GlobalContext) : Fact = RootFact(this)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -97,10 +101,22 @@ private[fact] case class MayByFact(fact: Fact) extends Fact {
 
 //----------------------------------------------------------------------------------------------------------------------
 
+private [fact] case class RootFact(fact: Fact)(implicit globalContext: GlobalContext) extends Fact {
+  override def isComplex: Boolean = true
+
+  override def suit(context: ContextLike): Boolean = globalContext suit fact
+
+  override def base(implicit globalContext: GlobalContext): Fact = this
+
+  override def toString: String = s"base($fact)"
+}
+
 private[fact] case class PathFact(fact: Fact, path: Fact) extends Fact {
   override def suit(context: ContextLike): Boolean = context.relations filter (path suit) exists (fact suit)
 
   override def isComplex: Boolean = true
+
+  override def up : Fact = path
 
   override def toString: String = s"$path :: $fact"
 }
@@ -113,6 +129,8 @@ private[fact] case class AllPathFact(fact: Fact, path: Fact) extends Fact {
 
   override def isComplex: Boolean = true
 
+  override def up : Fact = path
+
   override def toString: String = s"$path ::: $fact"
 }
 
@@ -123,7 +141,7 @@ private[fact] case class StrictNegativeFact(fact: Fact) extends Fact {
 
   override def isComplex: Boolean = true
 
-  override def unary_!! : Fact = fact
+  override def unary_- : Fact = fact
 
   override def toString: String = s"!!$fact"
 }
@@ -200,4 +218,6 @@ object Fact {
   implicit def symbolToFact(symbol: Symbol): Fact = SymbolFact(symbol.name)
 
   implicit def stringToFact(string: String): Fact = if (string.isEmpty) AllFacts else SymbolFact(string)
+
+  def base(fact: Fact)(implicit globalContext: GlobalContext): Fact = fact.base
 }

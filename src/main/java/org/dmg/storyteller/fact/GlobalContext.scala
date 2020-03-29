@@ -22,8 +22,7 @@ class GlobalContext {
   implicit def toContext(path: Fact): Context = {
     val contexts = links filter (path suit)
     if (contexts.isEmpty) {
-      val context = new SimpleContext()
-      context add path
+      val context = SimpleContext(path)
       links.append(context)
       context
     } else {

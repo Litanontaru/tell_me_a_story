@@ -42,3 +42,11 @@ class SimpleContext extends Context {
       context
     })
 }
+
+object SimpleContext {
+  def apply(facts: Fact*): Context = {
+    val context = new SimpleContext
+    context.facts.append(facts: _*)
+    context
+  }
+}

@@ -8,7 +8,7 @@ import scala.language.{implicitConversions, postfixOps}
   *
   * @author Andrei_Yakushin
   */
-class GlobalContext(val scripts: Seq[Script]) {
+class GlobalContext(val scripts: Seq[Script], words: Seq[Word]) {
   private val links = ListBuffer.empty[Context]
 
   private val suitContext: ContextLike = new ContextLike {
@@ -38,6 +38,14 @@ class GlobalContext(val scripts: Seq[Script]) {
       .find(_.isDefined)
       .flatten
 
+  def callWord(call: Fact): Option[String] =
+    //todo add more interesting selection strategy. Now it takes the first.
+    words
+      .toIterator
+      .map(_.apply(call, this))
+      .find(_.isDefined)
+      .flatten
+
   implicit def toContext(path: String): Context =
     toContext(Fact.stringToFact(path))
 
@@ -46,4 +54,14 @@ class GlobalContext(val scripts: Seq[Script]) {
 
   implicit def suit(fact: Fact): Boolean =
     fact suit suitContext
+
+  implicit class WordWriter(val sc: StringContext) {
+    def w(args: Any*): String = {
+      val key = sc.s(args: _*)
+      callWord(key) match {
+        case Some(word) ⇒ word
+        case None ⇒ key
+      }
+    }
+  }
 }

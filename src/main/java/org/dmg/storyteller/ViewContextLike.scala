@@ -1,6 +1,6 @@
-package org.dmg.storyteller.fact
+package org.dmg.storyteller
 
-private[fact] class ViewContextLike(base: ContextLike, view: ContextLike) extends ContextLike {
+private[storyteller] class ViewContextLike(base: ContextLike, view: ContextLike) extends ContextLike {
   override def has(expression: String): Boolean = (view has expression) || (base has expression)
 
   override def superposition: Seq[ContextLike] =

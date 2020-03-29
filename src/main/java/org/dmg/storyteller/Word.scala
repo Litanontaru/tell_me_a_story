@@ -1,4 +1,4 @@
-package org.dmg.storyteller.fact
+package org.dmg.storyteller
 
 trait Word {
   def descriptor: Context
@@ -8,7 +8,7 @@ trait Word {
   def apply(call: Fact, globalContext: GlobalContext): Option[String] =
     if ((call suit descriptor) && (globalContext suit prerequisite)) Some(apply(globalContext)) else None
 
-  private[fact] def apply(globalContext: GlobalContext): String
+  private[storyteller] def apply(globalContext: GlobalContext): String
 }
 
 case class SimpleWord(descriptor: Context, prerequisite: Fact, script: GlobalContext ⇒ String) extends Word {

@@ -1,4 +1,4 @@
-package org.dmg.storyteller.fact
+package org.dmg.storyteller
 
 trait Context extends ContextLike {
   def add(fact: Fact): Context

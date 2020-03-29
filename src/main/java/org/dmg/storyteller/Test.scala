@@ -1,6 +1,6 @@
-package org.dmg.storyteller.fact
+package org.dmg.storyteller
 
-import org.dmg.storyteller.fact.Fact._
+import org.dmg.storyteller.Fact._
 
 @deprecated
 object Test {

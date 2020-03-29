@@ -1,4 +1,4 @@
-package org.dmg.storyteller.fact
+package org.dmg.storyteller
 
 /**
   * TODO Write JavaDoc please.

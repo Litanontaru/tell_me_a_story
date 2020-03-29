@@ -1,4 +1,4 @@
-package org.dmg.storyteller.fact
+package org.dmg.storyteller
 
 /**
   * TODO Write JavaDoc please.
@@ -13,7 +13,7 @@ trait Script {
   def apply(call: Fact, in: Context, globalContext: GlobalContext): Option[Context] =
     if ((call suit descriptor) && (prerequisite suit in)) Some(apply(in, globalContext)) else None
 
-  private[fact] def apply(in: Context, globalContext: GlobalContext): Context
+  private[storyteller] def apply(in: Context, globalContext: GlobalContext): Context
 }
 
 case class SimpleScript(descriptor: Context, prerequisite: Fact, script: (Context, GlobalContext) ⇒ Context) extends Script {

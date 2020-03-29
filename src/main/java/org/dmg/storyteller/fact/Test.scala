@@ -5,18 +5,23 @@ import org.dmg.storyteller.fact.Fact._
 @deprecated
 object Test {
   def main(args: Array[String]): Unit = {
-    val say_hellow_1 = Script('say_hellow) { (in, global) ⇒
+    val say_hellow_1 = Script('say_hello) { (in, _) ⇒
       println("Hello world")
       in
     }
-    val say_hellow_2 = Script('say_hellow) { (in, global) ⇒
+    val say_hellow_2 = Script('say_hello) { (in, _) ⇒
       println("Hello world!")
       in
     }
-
     implicit val globalContext: GlobalContext = new GlobalContext(Seq(say_hellow_1, say_hellow_2))
 
     import globalContext._
+
+    //test script call
+
+    "" call 'say_hello
+
+    //test facts and context implicits
 
     def test(fact: Fact): Unit = {
       if (fact) {
@@ -26,8 +31,6 @@ object Test {
       }
     }
 
-    'A call 'say_hellow
-
     'A add 'a | 'b
 
     test("A" :: ('a && 'b))
@@ -35,10 +38,6 @@ object Test {
     ('A | 'D) link ('B / 'C)
     ('A | 'D) link ('B / 'E)
     'E add 'C
-
-    if ("Fact 1" || "Fact 2") {
-
-    }
 
     test('D :: 'B :: ('E || 'C && base('A) :: 'a))
     test('A :: 'B :: ('E || 'C && base('A) :: 'a))

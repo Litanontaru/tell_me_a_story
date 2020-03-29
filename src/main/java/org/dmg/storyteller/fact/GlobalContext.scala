@@ -31,10 +31,12 @@ class GlobalContext(val scripts: Seq[Script]) {
   }
 
   def callScript(call: Fact, in: Context): Option[Context] =
-    //todo fix this. Now it calls all suitable scripts instead of one
+    //todo add more interesting selection strategy. Now it takes the first.
     scripts
-      .flatMap(_.apply(call, in, this))
-      .headOption
+      .toIterator
+      .map(_.apply(call, in, this))
+      .find(_.isDefined)
+      .flatten
 
   implicit def toContext(path: String): Context =
     toContext(Fact.stringToFact(path))

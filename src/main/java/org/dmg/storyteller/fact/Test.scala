@@ -5,7 +5,16 @@ import org.dmg.storyteller.fact.Fact._
 @deprecated
 object Test {
   def main(args: Array[String]): Unit = {
-    implicit val globalContext: GlobalContext = new GlobalContext()
+    val say_hellow_1 = Script('say_hellow) { (in, global) ⇒
+      println("Hello world")
+      in
+    }
+    val say_hellow_2 = Script('say_hellow) { (in, global) ⇒
+      println("Hello world!")
+      in
+    }
+
+    implicit val globalContext: GlobalContext = new GlobalContext(Seq(say_hellow_1, say_hellow_2))
 
     import globalContext._
 
@@ -16,6 +25,8 @@ object Test {
         println(s"-\t$fact")
       }
     }
+
+    'A call 'say_hellow
 
     'A add 'a | 'b
 

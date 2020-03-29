@@ -8,7 +8,7 @@ import scala.language.{implicitConversions, postfixOps}
   *
   * @author Andrei_Yakushin
   */
-class GlobalContext {
+class GlobalContext(val scripts: Seq[Script]) {
   private val links = ListBuffer.empty[Context]
 
   private val suitContext: ContextLike = new ContextLike {
@@ -30,9 +30,18 @@ class GlobalContext {
     }
   }
 
-  implicit def toContext(path: String): Context = toContext(Fact.stringToFact(path))
+  def callScript(call: Fact, in: Context): Option[Context] =
+    //todo fix this. Now it calls all suitable scripts instead of one
+    scripts
+      .flatMap(_.apply(call, in, this))
+      .headOption
 
-  implicit def toContext(path: Symbol): Context = toContext(Fact.symbolToFact(path))
+  implicit def toContext(path: String): Context =
+    toContext(Fact.stringToFact(path))
 
-  implicit def suit(fact: Fact): Boolean = fact suit suitContext
+  implicit def toContext(path: Symbol): Context =
+    toContext(Fact.symbolToFact(path))
+
+  implicit def suit(fact: Fact): Boolean =
+    fact suit suitContext
 }

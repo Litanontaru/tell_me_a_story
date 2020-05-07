@@ -101,7 +101,7 @@ private[storyteller] case class MayByFact(fact: Fact) extends Fact {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-private [fact] case class RootFact(fact: Fact)(implicit globalContext: GlobalContext) extends Fact {
+private [storyteller] case class RootFact(fact: Fact)(implicit globalContext: GlobalContext) extends Fact {
   override def isComplex: Boolean = true
 
   override def suit(context: ContextLike): Boolean = globalContext suit fact
